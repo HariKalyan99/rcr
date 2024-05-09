@@ -1,19 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import RCRHeader from "./RCRHeader";
 import Sidebar from "./Sidebar";
-import Viewblogs from "./Viewblogs";
-import Createblogs from "./Createblogs";
+import { Outlet } from "react-router-dom";
 
-const Dashboard = ({blogsList, handlePageShowcase, showPage, addBlogs}) => {
+const Dashboard = () => {
 
-
+// const {showPage} = useContext(BlogStore)
   return (
     <div>
       <RCRHeader />
       <div className="d-flex">
-        <Sidebar handlePageShowcase={handlePageShowcase} showPage={showPage}/>
-        {showPage === "createBlogs" ?
-        <Createblogs addBlogs={addBlogs}/> :  <Viewblogs blogsList={blogsList} />}
+        <Sidebar />
+        <Outlet />
       </div>
     </div>
   );
