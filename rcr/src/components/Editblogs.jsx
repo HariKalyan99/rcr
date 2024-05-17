@@ -14,7 +14,7 @@ const [getreactions, setreactions] = useState(blog.reactions)
 
 const handleSubmit = (e) => {
     e.preventDefault();
-    editBlogs({userId: Number(getuserId), title: gettitle, body: getbody, tags: gettags.split(","), reactions: Number(getreactions), id: blog.id});
+    editBlogs({userId: Number(getuserId), title: gettitle, body: getbody, tags: gettags.split(","), reactions: Number(getreactions), id: blog._id});
     setOpenEdit(!openEdit)
 }
 

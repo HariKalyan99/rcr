@@ -20,12 +20,12 @@ function pureReducerFunction(currentState, action) {
     else if(action.type === "ADD_BLOG"){
         newBlogList = [action.payload.data, ...currentState];
     }else if(action.type === "EDIT_BLOG"){
-        let index = currentState.findIndex(x => x.id === action.payload.id);
+        let index = currentState.findIndex(x => x._id === action.payload.id);
         let newBlogListToUpload = [...currentState]
-        newBlogListToUpload.splice(index, 1, {id: action.payload.id, userId: action.payload.data.userId, body: action.payload.data.body, title: action.payload.data.title, tags: action.payload.data.tags, reactions: action.payload.data.reactions });
+        newBlogListToUpload.splice(index, 1, {_id: action.payload.id, userId: action.payload.data.userId, body: action.payload.data.body, title: action.payload.data.title, tags: action.payload.data.tags, reactions: action.payload.data.reactions, id: action.payload.data.id });
         newBlogList = newBlogListToUpload
     }else if(action.type === "DELETE_BLOG"){
-        let findBlogAndDelete = currentState.filter(x => x.id !== action.payload.id);
+        let findBlogAndDelete = currentState.filter(x => x._id !== action.payload.id);
         newBlogList = findBlogAndDelete;
     }
     return newBlogList;
@@ -51,7 +51,7 @@ const BlogStoreContextProvider = ({children}) => {
       const {signal} = controller;
       const fetchBlogs = async() => {
         try{
-          const {data} = await axios.get('http://localhost:8081/posts', signal);
+          const {data} = await axios.get('http://127.0.0.1:8084/blog', signal);
         //   setBlogsList(data);
           useCallback(dispacthBlogList({
             type: "INITIAL_BLOGS",
@@ -75,7 +75,7 @@ const BlogStoreContextProvider = ({children}) => {
     useEffect(() => {
       const addBlogRequest = async({id, userId, title, body, tags, reactions}) => {
         try{
-          const {data} = await axios.post('http://localhost:8081/posts', {
+          const {data} = await axios.post('http://127.0.0.1:8084/blog/new', {
           id, userId, title, body, tags, reactions
         })
         // setBlogsList([data, ...blogsList])
@@ -100,7 +100,7 @@ const BlogStoreContextProvider = ({children}) => {
     useEffect(() => {
       const deleteBlogRequest = async(id) => {
         try{
-          const {data} = await axios.delete(`http://localhost:8081/posts/${id}`);
+          const {data} = await axios.delete(`http://127.0.0.1:8084/blog/${id}`);
         //   let findBlogAndDelete = blogsList.filter(x => x.id !== id);
         //   setBlogsList(findBlogAndDelete)
         useCallback(dispacthBlogList({
@@ -124,7 +124,7 @@ const BlogStoreContextProvider = ({children}) => {
     useEffect(() => {
       const editBlogRequest = async({id, userId, title, body, reactions, tags}) => {
         try{
-          const {data} = await axios.put(`http://localhost:8081/posts/${id}`, {
+          const {data} = await axios.put(`http://127.0.0.1:8084/blog/${id}`, {
             userId, title, body, reactions, tags
           });
           useCallback(dispacthBlogList({
