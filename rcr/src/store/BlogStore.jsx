@@ -9,6 +9,7 @@ export const BlogStore = createContext({
     deleteBlog: () => {},
     handlePageShowcase: () => {},
   showPage: () => {},
+  searchBlog: () => {}
 }) 
 
 
@@ -27,6 +28,8 @@ function pureReducerFunction(currentState, action) {
     }else if(action.type === "DELETE_BLOG"){
         let findBlogAndDelete = currentState.filter(x => x._id !== action.payload.id);
         newBlogList = findBlogAndDelete;
+    }else if(action.type === "SEARCH_BLOG"){
+      newBlogList = action.payload.data;
     }
     return newBlogList;
 }
@@ -43,6 +46,7 @@ const BlogStoreContextProvider = ({children}) => {
 
     const [blogsList, dispacthBlogList] = useReducer(pureReducerFunction, []);
 
+    const [search, setSearch] = useState("");
 
   
   
@@ -145,6 +149,31 @@ const BlogStoreContextProvider = ({children}) => {
         editBlogRequest(getEditBlog);
       }
     }, [getEditBlog])
+
+    useEffect(() => {
+      const fetchSearch = async(value) => {
+        try{
+          const {data} = await axios.get(`http://127.0.0.1:8084/blog/search?title=${value}`);
+          useCallback(dispacthBlogList({
+            type: "SEARCH_BLOG",
+            payload: {
+              data,
+            }
+          }), [dispacthBlogList])
+        }catch(error){
+          console.log("Error", error)
+        }
+      }
+      
+        const timer = setTimeout(() => {
+            fetchSearch(search)
+        }, 600)
+
+        return () => {
+          clearTimeout(timer)
+        }
+
+    }, [search])
   
   
   
@@ -164,9 +193,14 @@ const BlogStoreContextProvider = ({children}) => {
       setdeleteBlog(id)
     }
 
+
+    const searchBlog = (title) => {
+        setSearch(title);
+    }
+
     return(
         <BlogStore.Provider value={{blogsList, addBlogs, editBlogs, deleteBlog,handlePageShowcase
-            , showPage}}>
+            , showPage, searchBlog}}>
             {children}
         </BlogStore.Provider>
     )

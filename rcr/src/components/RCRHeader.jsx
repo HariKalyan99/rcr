@@ -1,6 +1,16 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
+import { BlogStore } from '../store/BlogStore';
 
 const RCRHeader = () => {
+  
+  const {searchBlog} = useContext(BlogStore)
+  const [getInput, setInput] = useState("");
+
+
+  const handleChange = (value) => {
+    setInput(value)
+    searchBlog(value)
+  }
   return (
     <header className="p-3 text-bg-dark">
     <div className="container">
@@ -18,7 +28,7 @@ const RCRHeader = () => {
         </ul>
 
         <form className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-          <input type="search" className="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" />
+          <input type="search" className="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" value={getInput} onChange={(e) => handleChange(e.target.value)}/>
         </form>
 
         <div className="text-end">
